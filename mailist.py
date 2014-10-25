@@ -3,6 +3,8 @@ import sys
 from mailer import Mailer, Message
 from string import Template
 
+import config
+
 def load_template(filename):
     with open(filename) as f:
         text = f.read().decode('utf8')
@@ -30,7 +32,7 @@ male_template = load_template('letter-male.txt')
 female_template = load_template('letter-female.txt')
 
 mailer = Mailer(host='smtp.gmail.com', port=587, use_tls=True)
-mailer.login('eli.finer@gmail.com', 'REDACTED')
+mailer.login(config.GMAIL_LOGIN, config.GMAIL_PASSWORD)
 
 for email, name, gender in PEOPLE:
     print >>sys.stderr, email + '...',
