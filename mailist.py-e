@@ -1,5 +1,5 @@
 # coding=utf8
-
+import sys
 from mailer import Mailer, Message
 from string import Template
 
@@ -20,9 +20,8 @@ def load_template(filename):
     return Template(text)
 
 PEOPLE = [
-    ('eli.finer@gmail.com', u'אלי', 'm'),
-    ('eli.finer@gmail.com', u'אלי2', 'm'),
-    # ('yael.finer@gmail.com', u'יעל', 'f'),
+    ('eli.finer+male@gmail.com', u'אלי', 'm'),
+    ('eli.finer+female@gmail.com', u'אליה', 'f'),
 ]
 
 subject = u'הסדנה הבאה'
@@ -34,15 +33,13 @@ mailer = Mailer(host='smtp.gmail.com', port=587, use_tls=True)
 mailer.login('eli.finer@gmail.com', 'REDACTED')
 
 for email, name, gender in PEOPLE:
-    print email
+    print >>sys.stderr, email + '...',
     if gender == 'm':
         text = male_template.substitute(name=name)
     elif gender == 'f':
         text = female_template.substitute(name=name)
-    # print message.encode('utf8')
-
-    message = Message(From='eli@noshem.co.il', To=email, charset='utf8')
+    message = Message(From=from_address, To=email, charset='utf8')
     message.Subject = subject.encode('utf8')
     message.Html = text.encode('utf8')
-
     mailer.send(message)
+    print >>sys.stderr, 'ok'
