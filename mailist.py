@@ -21,8 +21,9 @@ def bidi(s):
     return '\n'.join(lines)
 
 def text2html(text):
-    text = text.replace('\n', '<br>\n')
-    text = '<div dir="rtl">%s</div>' % text
+    lines = text.splitlines()
+    lines = ['<div>%s</div>' % (l or '<br>') for l in lines]
+    text = '<div dir="rtl">%s</div>' % ''.join(lines)
     return text
 
 def parse_addresses(filename):
@@ -49,7 +50,7 @@ def parse_merged_messages(filename):
             lines = msg.splitlines()
             for i, line in enumerate(lines):
                 if ':' in line:
-                    header, value = map(unicode.strip, line.split(':'))
+                    header, value = map(unicode.strip, line.split(':', 1))
                     rec[MAIL_HEADERS[header]] = value
                 else:
                     break
